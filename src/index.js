@@ -2,17 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-/*class Square extends React.Component {
-    render() {
-        return (
-            <button className="square"
-                    onClick={() => this.props.onClick()}>
-                {this.props.value}
-            </button>
-        );
-    }
-}*/
-
 function Square(props) {
     return (
         <button className="square" onClick={props.onClick}>
@@ -67,6 +56,7 @@ class Game extends React.Component {
             }],
             stepNumber: 0,
             xIsNext: true,
+            sorting: 'asc'
         };
     }
 
@@ -87,6 +77,14 @@ class Game extends React.Component {
             }]),
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
+        });
+    }
+
+    sortMoves() {
+        const sorting = this.state.sorting === 'asc' ? 'desc' : 'asc';
+
+        this.setState({
+            sorting: sorting,
         });
     }
 
@@ -114,6 +112,7 @@ class Game extends React.Component {
                 </li>
             );
         });
+        const sorting = this.state.sorting;
 
         let status;
         if (winner) {
@@ -132,7 +131,8 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{ status }</div>
-                    <ol>{ moves }</ol>
+                    <div><button onClick={() => this.sortMoves()}>Sort moves ({ sorting })</button></div>
+                    <ol>{ sorting === 'asc' ? moves : moves.reverse() }</ol>
                 </div>
             </div>
         );
