@@ -4,7 +4,8 @@ import './index.css';
 
 function Square(props) {
     return (
-        <button className="square" onClick={props.onClick}>
+        <button className={'square ' + (props.isWinnerSquare ? 'square-winner' : '')}
+                onClick={props.onClick}>
             {props.value}
         </button>
     );
@@ -12,7 +13,10 @@ function Square(props) {
 
 class Board extends React.Component {
     renderSquare(i) {
-        return <Square value={this.props.squares[i]}
+        const isWinnerSquare = this.props.winner && this.props.winner.winnerSquares.includes(i) ? true : false;
+
+        return <Square isWinnerSquare={isWinnerSquare}
+                       value={this.props.squares[i]}
                        onClick={() => this.props.onClick(i)} />;
     }
 
@@ -68,6 +72,7 @@ class Game extends React.Component {
         if (calculateWinner(squares) || squares[i]) {
             return;
         }
+
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
             history: history.concat([{
@@ -116,7 +121,7 @@ class Game extends React.Component {
 
         let status;
         if (winner) {
-            status = 'Winner: ' + winner;
+            status = 'Winner: ' + winner.winner;
         } else {
             status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
@@ -125,6 +130,7 @@ class Game extends React.Component {
             <div className="game">
                 <div className="game-board">
                     <Board
+                        winner={winner}
                         squares={current.squares}
                         onClick={(i) => this.handleClick(i)}
                     />
@@ -160,7 +166,10 @@ function calculateWinner(squares) {
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+            return {
+                winner: squares[a],
+                winnerSquares: lines[i]
+            };
         }
     }
     return null;

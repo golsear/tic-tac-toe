@@ -53,3 +53,8 @@ ol, ul {
 .text-bold button {
     font-weight: bold;
 }
+
+.square-winner {
+    background: #000;
+    color: #FFF;
+}
